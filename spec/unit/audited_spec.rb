@@ -18,7 +18,7 @@ describe "DataMapper::Audited" do
     end
   end
 
-  it "is included when DataMapper::Searchable is loaded" do
+  it "is included when DataMapper::Audited is loaded" do
     Cow.new.should be_kind_of(DataMapper::Audited)
   end
 
