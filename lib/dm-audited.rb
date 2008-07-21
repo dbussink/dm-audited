@@ -28,12 +28,23 @@ module DataMapper
           changed_attributes[key] = [val, attributes[key]]
         end
 
-        Audit.create!(:auditable_type => self.class.to_s,
-                      :auditable_id   => self.id,
-                      :user_id        => user,
-                      :action         => action,
-                      :request        => request,
-                      :changes        => changed_attributes)
+        audit_attributes = {
+          :auditable_type => self.class.to_s,
+          :auditable_id   => self.id,
+          :user_id        => user,
+          :action         => action,
+          :changes        => changed_attributes
+        }
+
+        if request
+          audit_attributes.merge!(
+            :request_uri    => request.uri,
+            :request_method => request.method,
+            :request_method => request.params.to_yaml
+          )
+        end
+
+        Audit.create!(audit_attributes)
         remove_instance_variable("@audited_attributes")
         remove_instance_variable("@audited_new_record") if instance_variable_defined?("@audited_new_record")
       end
@@ -74,9 +85,11 @@ module DataMapper
 
       property :id,             Integer, :serial => true
       property :auditable_type, String
-      property :auditable_id,   String
+      property :auditable_id,   Integer
       property :user_id,        String
-      property :request,        String
+      property :request_uri,    String
+      property :request_method, String
+      property :request_params, Text
       property :action,         String
       property :changes,        Text
       property :created_at,     DateTime
@@ -92,6 +105,15 @@ module DataMapper
       def changes
         @changes_hash ||= YAML.load(attribute_get(:changes))
       end
+
+      def request_params=(params)
+        attribute_set(:request_params, params.to_yaml)
+      end
+
+      def request_params
+        @request_params_hash ||= YAML.load(attribute_get(:request_params))
+      end
+
     end
 
   end
