@@ -4,6 +4,8 @@ require Pathname(__FILE__).dirname.expand_path.parent + 'spec_helper'
 describe "DataMapper::Audited" do
 
   before :all do
+    DataObjects::Sqlite3.logger = DataObjects::Logger.new('spec/sql.log', 0)
+
     class Cow
       include DataMapper::Resource
       include DataMapper::Audited
