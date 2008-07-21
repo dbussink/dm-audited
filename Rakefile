@@ -8,16 +8,16 @@ require 'pathname'
 CLEAN.include '{log,pkg}/'
  
 spec = Gem::Specification.new do |s|
-  s.name             = 'dm-searchable'
+  s.name             = 'dm-audited'
   s.version          = '0.0.1'
   s.platform         = Gem::Platform::RUBY
   s.has_rdoc         = true
   s.extra_rdoc_files = %w[ README LICENSE ]
-  s.summary          = 'DataMapper plugin providing simple search on resources'
+  s.summary          = 'DataMapper plugin providing auditing for resources'
   s.description      = s.summary
   s.author           = 'Dirkjan Bussink'
   s.email            = 'd.bussink@gmail.com'
-  s.homepage         = 'http://github.com/dbussink/dm-searchable'
+  s.homepage         = 'http://github.com/dbussink/dm-audited'
   s.require_path     = 'lib'
   s.files            = FileList[ '{lib,spec}/**/*.rb', 'spec/spec.opts', 'Rakefile', *s.extra_rdoc_files ]
   s.add_dependency('dm-core', ">=0.9.2")

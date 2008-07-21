@@ -9,11 +9,7 @@ spec_dir_path = Pathname(__FILE__).dirname.expand_path
 def load_driver(name, default_uri)
   return false if ENV['ADAPTER'] != name.to_s
  
-  lib = "do_#{name}"
- 
   begin
-    gem lib, '>=0.9.2'
-    require lib
     DataMapper.setup(name, ENV["#{name.to_s.upcase}_SPEC_URI"] || default_uri)
     DataMapper::Repository.adapters[:default] =  DataMapper::Repository.adapters[name]
  
