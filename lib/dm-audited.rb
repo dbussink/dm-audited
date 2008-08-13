@@ -20,12 +20,12 @@ module DataMapper
         # The request is also optionally included if it can be found in the
         # Application controller. Here again the implementer needs to provide
         # this and make sure it's thread safe.
-        user    = defined? User        && User.respond_to?(:current_user)           ? User.current_user.id        : nil
-        request = defined? Application && Application.respond_to?(:current_request) ? Application.current_request : nil
+        user    = defined?(::User)        && ::User.respond_to?(:current_user) && ::User.current_user ? ::User.current_user.id        : nil
+        request = defined?(::Application) && ::Application.respond_to?(:current_request)              ? ::Application.current_request : nil
 
         changed_attributes = {}
         @audited_attributes.each do |key, val|
-          changed_attributes[key] = [val, attributes[key]]
+          changed_attributes[key] = [val, attributes[key]] unless val == attributes[key]
         end
 
         audit_attributes = {
@@ -37,16 +37,21 @@ module DataMapper
         }
 
         if request
+          params = request.params
+          if defined?(::Application) && defined?(Merb::Controller)
+            params = Application._filter_params(params)
+          end
+
           audit_attributes.merge!(
             :request_uri    => request.uri,
             :request_method => request.method,
-            :request_method => request.params.to_yaml
+            :request_params => params.to_hash.to_yaml
           )
         end
 
-        Audit.create!(audit_attributes)
         remove_instance_variable("@audited_attributes")
         remove_instance_variable("@audited_new_record") if instance_variable_defined?("@audited_new_record")
+        Audit.create(audit_attributes)
       end
 
       def audits
