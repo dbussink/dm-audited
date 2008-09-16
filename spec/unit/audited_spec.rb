@@ -44,7 +44,7 @@ describe "DataMapper::Audited" do
   end
 
   it "should create a new Audit object when changing an object" do
-    c = Cow.create!(:name => "Bertha")
+    c = Cow.create(:name => "Bertha")
 
     c.name = "Cindy"
     c.save
@@ -61,7 +61,7 @@ describe "DataMapper::Audited" do
   end
 
   it "should create a new Audit object when destroying an object" do
-    c = Cow.create!(:name => "Bertha")
+    c = Cow.create(:name => "Bertha")
 
     c.destroy
 
