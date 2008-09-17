@@ -105,7 +105,7 @@ module DataMapper
       end
 
       def changes=(properties)
-        attribute_set(:changes, JSON.dump(properties))
+        attribute_set(:changes, properties.to_json)
       end
 
       def changes
@@ -113,7 +113,7 @@ module DataMapper
       end
 
       def request_params=(params)
-        attribute_set(:request_params, JSON.dump(params))
+        attribute_set(:request_params, params.to_json)
       end
 
       def request_params
